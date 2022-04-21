@@ -1,0 +1,4 @@
+{
+	"secret-key": "9f65c704a35b0bda17e47ca7af5feba3",
+	"sqlite-db": "sqlite:///site.db"
+}
