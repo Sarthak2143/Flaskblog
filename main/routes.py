@@ -1,28 +1,18 @@
-from flask import render_template, url_for, flash, redirect, request
-from main.forms import RegistrationForm, LoginForm
+import os
+import secrets
+from PIL import Image
+from flask import render_template, url_for, flash, redirect, request, abort
+from main.forms import RegistrationForm, LoginForm, UpdateAccountForm, PostForm
 from main.models import User, Post
 from main import app, db, bcrypt
 from flask_login import login_user, current_user, logout_user, login_required
 
-posts = [
-        {
-            "author": "Sarthak Tomar",
-            "title": "Post 1",
-            "date_posted": "Feb 28 2022",
-            "content": "My blog post, where i'll post my daily updates."
-            },
-        {
-            "author": "John Doe",
-            "title": "Post 2",
-            "date_posted": "Feb 29 2022",
-            "content": "My test blog post for testing our page."
-            }
-        ]
 
 @app.route("/")
 @app.route("/home")
 def home():
-    return render_template("home.html", posts = posts)
+    posts = Post.query.all()
+    return render_template("home.html", posts=posts)
 
 @app.route("/about")
 def about():
@@ -68,8 +58,96 @@ def logout():
     flash("You have been successfully logged out of your account!", "success")
     return redirect(url_for('home'))
 
-@app.route("/account")
+
+def save_picture(form_pic):
+    random_hex = secrets.token_hex(8)
+    _, f_ext = os.path.splitext(form_pic.filename)
+    pic_fname = random_hex + f_ext
+    pic_path = os.path.join(app.root_path, "static/profile_pics", pic_fname)
+
+    output_size = (125, 125)
+    i = Image.open(form_pic)
+    i.thumbnail(output_size)
+    i.save(pic_path)
+
+    return pic_fname
+
+@app.route("/account", methods=["GET", "POST"])
 @login_required
 def account():
-    return render_template('account.html', title = 'Account')
+    form = UpdateAccountForm()
 
+    if form.validate_on_submit():
+        if form.picture.data:
+            picture_file = save_picture(form.picture.data)
+            current_user.image_file = picture_file
+
+        current_user.username = form.username.data
+        current_user.email = form.email.data
+        db.session.commit()
+        flash("Your account has been successfully updated.", "success")
+        return redirect(url_for('account'))
+
+    elif request.method == 'GET':
+        form.username.data = current_user.username
+        form.email.data = current_user.email
+
+    image_file = url_for('static', filename = 'profile_pics/' + current_user.image_file)
+    return render_template('account.html', title = 'Account', image_file = image_file, form=form)
+
+
+@app.route("/post/new", methods=["POST", "GET"])
+@login_required
+def new_post():
+    form = PostForm()
+    if form.validate_on_submit():
+        post = Post(title=form.title.data, content=form.content.data, author=current_user)
+        db.session.add(post)
+        db.session.commit()
+        flash('Your post have been created!', "success")
+        return redirect(url_for('home'))
+    return render_template('post_op.html', title = 'New Post', form=form, legend='New Post')
+
+
+@app.route("/post/<int:post_id>")
+def post(post_id):
+    post = Post.query.get_or_404(post_id)
+    return render_template('post.html', title='post.title', post=post)
+
+@app.route("/post/<int:post_id>/update", methods=["GET", "POST"])
+@login_required
+def update_post(post_id):
+    post = Post.query.get_or_404(post_id)
+
+    if post.author != current_user:
+        abort(403)
+    
+    form = PostForm()
+
+    if form.validate_on_submit():
+        post.title = form.title.data
+        post.content = form.content.data
+        db.session.commit()
+        flash("Your post have been updated!", "success")
+        return redirect(url_for('post', post_id = post.id))
+
+    elif request.method == 'GET':
+
+        form.title.data = post.title
+        form.content.data = post.content
+
+    return render_template('post_op.html', title='Update Post', form=form, legend = 'Update Post')
+
+
+@app.route('/post/<int:post_id>/delete', methods=['POST'])
+@login_required
+def delete_post(post_id):
+    post = Post.query.get_or_404(post_id)
+    
+    if post.author != current_user:
+        abort(403)
+
+    db.session.delete(post)
+    db.session.commit()
+    flash("Your post have been deleted!", "success")
+    return redirect(url_for('home'))
