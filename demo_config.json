@@ -1,0 +1,6 @@
+{
+	"secret-key": "something very secret here.",
+	"sqlite-db": "sqlite:///site.db",
+	"email_id": "youremail@gmail.com",
+	"email_pwd": "password for your gmail account"
+}

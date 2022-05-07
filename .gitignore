@@ -1,3 +1,6 @@
-main/site.db
 config.json
 main/__pycache__
+main/users/__pycache__
+main/posts/__pycache__
+main/errors/__pycache__
+main/main/__pycache__
