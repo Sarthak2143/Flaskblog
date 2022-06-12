@@ -1,6 +1,6 @@
 # Python(Flask) blog application 
 
-A blog application written in python with the help of `flask` framework with multiple functionalities, app is like Twitter where various users can post anything.
+A responsive blog application written in python with the help of `flask` framework with multiple functionalities, app is like Twitter where various users can post anything.
 
 ## Features:
 
@@ -55,6 +55,7 @@ flask-mail
 flask-wtf
 bcrypt
 pillow
+flask_SQLAlchemy
 ```
 1. Start the app
 
