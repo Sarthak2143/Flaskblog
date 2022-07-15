@@ -28,7 +28,7 @@ git clone https://github.com/Sarthak2143/Flaskblog
 cd Flaskblog/
 ```
 
-1. Configuration
+2. Configuration
 
 - Rename `demo_config.json` to `config.json`
 - Open `config.json` in your editor.
@@ -46,9 +46,9 @@ It looks like this:
 
 Change values according to you and save changes.
 
-1. Install these required packages through `pip`.
+3. Install these required packages through `pip`.
 
-```
+```bash
 flask
 SQLAlchemy
 flask-mail
@@ -57,16 +57,14 @@ bcrypt
 pillow
 flask_SQLAlchemy
 ```
-1. Start the app
+4. Start the app
 
-```python3
+```bash
 python3 run.py
 ```
 
 Visit `http://localhost:5000` in your browser to test app.
 
-**Thats it for setting and running app.**
-
 ## Support
 
-As always, you can support my work my starring my projects, following me on [Github](https://github.com/Sarthak2143) and on [Twitter](https://twitter.com/voldemort_shin)
+As always, you can support my work my starring my projects, following me on [Github](https://github.com/Sarthak2143) and on [Twitter](https://twitter.com/voldemort_shin).
