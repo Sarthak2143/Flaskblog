@@ -1,7 +1,5 @@
 # Python(Flask) blog application 
 
-[![forthebadgemade-with-python](http://ForTheBadge.com/images/badges/made-with-python.svg)](https://www.python.org/)
-
 A responsive blog application written in python with the help of `flask` framework with multiple functionalities, app is like Twitter where various users can post anything.
 
 ## Features:
