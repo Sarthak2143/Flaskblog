@@ -6,6 +6,7 @@ with open('config.json', 'r') as f:
 class Config:
     SECRET_KEY = data['secret-key']
     SQLALCHEMY_DATABASE_URI = data['sqlite-db']
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
     MAIL_SERVER = 'smtp.gmail.com'
     MAIL_PORT = 587
     MAIL_USE_TLS = True
